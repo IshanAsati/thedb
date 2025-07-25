@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+
+{% block title %}Edit {{ contact.name }} - Contact Manager{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-edit me-2"></i>Edit Contact: {{ contact.name }}
+                </h3>
+            </div>
+            
+            <div class="card-body">
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row">
+                        <!-- Basic Information -->
+                        <div class="col-md-6">
+                            <h5 class="text-muted mb-3">
+                                <i class="fas fa-user me-2"></i>Basic Information
+                            </h5>
+                            
+                            <div class="mb-3">
+                                {{ form.name.label(class="form-label") }}
+                                <span class="text-danger">*</span>
+                                {{ form.name() }}
+                                {% if form.name.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.name.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.nickname.label(class="form-label") }}
+                                {{ form.nickname() }}
+                                {% if form.nickname.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.nickname.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.birthday.label(class="form-label") }}
+                                {{ form.birthday() }}
+                                <div class="form-text">Optional. Use format: YYYY-MM-DD</div>
+                                {% if form.birthday.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.birthday.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Additional Information -->
+                        <div class="col-md-6">
+                            <h5 class="text-muted mb-3">
+                                <i class="fas fa-info-circle me-2"></i>Additional Details
+                            </h5>
+                            
+                            <div class="mb-3">
+                                {{ form.tags.label(class="form-label") }}
+                                {{ form.tags() }}
+                                <div class="form-text">
+                                    Separate tags with commas (e.g., friend, work, family)
+                                </div>
+                                {% if form.tags.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.tags.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.social_media.label(class="form-label") }}
+                                {{ form.social_media() }}
+                                <div class="form-text">
+                                    JSON format. Example:<br>
+                                    <code>{"twitter": "@username", "instagram": "handle"}</code>
+                                </div>
+                                {% if form.social_media.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.social_media.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Notes section (full width) -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 class="text-muted mb-3">
+                                <i class="fas fa-sticky-note me-2"></i>Notes
+                            </h5>
+                            
+                            <div class="mb-4">
+                                {{ form.personality_notes.label(class="form-label") }}
+                                {{ form.personality_notes() }}
+                                <div class="form-text">
+                                    Personal notes, interests, characteristics, etc.
+                                </div>
+                                {% if form.personality_notes.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.personality_notes.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action buttons -->
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <a href="{{ url_for('view_contact', contact_id=contact.id) }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Back to Contact
+                            </a>
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-list me-1"></i>All Contacts
+                            </a>
+                        </div>
+                        
+                        <div>
+                            <button type="button" class="btn btn-outline-secondary me-2" onclick="resetToOriginal()">
+                                <i class="fas fa-undo me-1"></i>Reset Changes
+                            </button>
+                            {{ form.submit() }}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Current vs. Original comparison -->
+        <div class="mt-4">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-history me-2"></i>Original Values
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row small">
+                        <div class="col-md-6">
+                            <strong>Name:</strong> {{ contact.name }}<br>
+                            <strong>Nickname:</strong> {{ contact.nickname or 'None' }}<br>
+                            <strong>Birthday:</strong> {{ contact.birthday or 'None' }}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Tags:</strong> {{ contact.tags | join(', ') or 'None' }}<br>
+                            <strong>Last Updated:</strong> {{ contact.updated_at[:19] if contact.updated_at else 'Never' }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick tips -->
+        <div class="mt-4">
+            <div class="card border-warning">
+                <div class="card-body">
+                    <h6 class="card-title text-warning">
+                        <i class="fas fa-lightbulb me-2"></i>Editing Tips
+                    </h6>
+                    <ul class="mb-0 small">
+                        <li>Changes are saved immediately when you click "Save Contact"</li>
+                        <li>Use the "Reset Changes" button to restore the current values</li>
+                        <li>You can update individual fields - empty fields will be saved as empty</li>
+                        <li>The "Last Updated" timestamp will automatically be updated</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Store original values for reset functionality
+const originalValues = {
+    name: "{{ contact.name }}",
+    nickname: "{{ contact.nickname }}",
+    birthday: "{{ contact.birthday }}",
+    personality_notes: `{{ contact.personality_notes | replace('\n', '\\n') | replace('"', '\\"') }}`,
+    social_media: `{{ contact.social_media | tojson | safe }}`,
+    tags: "{{ contact.tags | join(', ') }}"
+};
+
+function resetToOriginal() {
+    if (confirm('Reset all fields to their original values?')) {
+        document.querySelector('input[name="name"]').value = originalValues.name;
+        document.querySelector('input[name="nickname"]').value = originalValues.nickname;
+        document.querySelector('input[name="birthday"]').value = originalValues.birthday;
+        document.querySelector('textarea[name="personality_notes"]').value = originalValues.personality_notes;
+        document.querySelector('textarea[name="social_media"]').value = JSON.stringify(JSON.parse(originalValues.social_media), null, 2);
+        document.querySelector('input[name="tags"]').value = originalValues.tags;
+    }
+}
+
+// Auto-format social media JSON
+document.addEventListener('DOMContentLoaded', function() {
+    const socialMediaTextarea = document.querySelector('textarea[name="social_media"]');
+    
+    if (socialMediaTextarea) {
+        socialMediaTextarea.addEventListener('blur', function() {
+            try {
+                if (this.value.trim()) {
+                    const parsed = JSON.parse(this.value);
+                    this.value = JSON.stringify(parsed, null, 2);
+                }
+            } catch (e) {
+                // Invalid JSON, let the server handle validation
+            }
+        });
+    }
+});
+
+// Form validation enhancement
+function validateForm() {
+    const name = document.querySelector('input[name="name"]').value.trim();
+    if (!name) {
+        alert('Name is required!');
+        return false;
+    }
+    
+    const socialMedia = document.querySelector('textarea[name="social_media"]').value.trim();
+    if (socialMedia) {
+        try {
+            JSON.parse(socialMedia);
+        } catch (e) {
+            alert('Social media must be valid JSON format!');
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+// Unsaved changes warning
+let formChanged = false;
+const form = document.querySelector('form');
+const inputs = form.querySelectorAll('input, textarea');
+
+inputs.forEach(input => {
+    input.addEventListener('change', () => {
+        formChanged = true;
+    });
+});
+
+window.addEventListener('beforeunload', function(e) {
+    if (formChanged) {
+        e.preventDefault();
+        e.returnValue = '';
+        return 'You have unsaved changes. Are you sure you want to leave?';
+    }
+});
+
+// Reset formChanged when form is submitted
+form.addEventListener('submit', () => {
+    formChanged = false;
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    // Ctrl+S to save
+    if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        form.submit();
+    }
+    // Ctrl+R to reset
+    if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault();
+        resetToOriginal();
+    }
+});
+</script>
+{% endblock %}

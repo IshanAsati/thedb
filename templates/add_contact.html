@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Add Contact - Contact Manager{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-plus me-2"></i>Add New Contact
+                </h3>
+            </div>
+            
+            <div class="card-body">
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row">
+                        <!-- Basic Information -->
+                        <div class="col-md-6">
+                            <h5 class="text-muted mb-3">
+                                <i class="fas fa-user me-2"></i>Basic Information
+                            </h5>
+                            
+                            <div class="mb-3">
+                                {{ form.name.label(class="form-label") }}
+                                <span class="text-danger">*</span>
+                                {{ form.name() }}
+                                {% if form.name.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.name.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.nickname.label(class="form-label") }}
+                                {{ form.nickname() }}
+                                {% if form.nickname.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.nickname.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.birthday.label(class="form-label") }}
+                                {{ form.birthday() }}
+                                <div class="form-text">Optional. Use format: YYYY-MM-DD</div>
+                                {% if form.birthday.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.birthday.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Additional Information -->
+                        <div class="col-md-6">
+                            <h5 class="text-muted mb-3">
+                                <i class="fas fa-info-circle me-2"></i>Additional Details
+                            </h5>
+                            
+                            <div class="mb-3">
+                                {{ form.tags.label(class="form-label") }}
+                                {{ form.tags() }}
+                                <div class="form-text">
+                                    Separate tags with commas (e.g., friend, work, family)
+                                </div>
+                                {% if form.tags.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.tags.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.social_media.label(class="form-label") }}
+                                {{ form.social_media() }}
+                                <div class="form-text">
+                                    JSON format. Example:<br>
+                                    <code>{"twitter": "@username", "instagram": "handle"}</code>
+                                </div>
+                                {% if form.social_media.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.social_media.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Notes section (full width) -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 class="text-muted mb-3">
+                                <i class="fas fa-sticky-note me-2"></i>Notes
+                            </h5>
+                            
+                            <div class="mb-4">
+                                {{ form.personality_notes.label(class="form-label") }}
+                                {{ form.personality_notes() }}
+                                <div class="form-text">
+                                    Personal notes, interests, characteristics, etc.
+                                </div>
+                                {% if form.personality_notes.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.personality_notes.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action buttons -->
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Contacts
+                        </a>
+                        
+                        <div>
+                            <button type="reset" class="btn btn-outline-secondary me-2">
+                                <i class="fas fa-undo me-1"></i>Reset Form
+                            </button>
+                            {{ form.submit() }}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Quick tips -->
+        <div class="mt-4">
+            <div class="card border-info">
+                <div class="card-body">
+                    <h6 class="card-title text-info">
+                        <i class="fas fa-lightbulb me-2"></i>Quick Tips
+                    </h6>
+                    <ul class="mb-0 small">
+                        <li>Only the <strong>Name</strong> field is required</li>
+                        <li>Use meaningful <strong>tags</strong> to organize your contacts (work, family, friends, etc.)</li>
+                        <li>Social media should be in JSON format for multiple platforms</li>
+                        <li>Birthday format: YYYY-MM-DD (e.g., 1990-12-25)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Auto-format social media JSON
+document.addEventListener('DOMContentLoaded', function() {
+    const socialMediaTextarea = document.querySelector('textarea[name="social_media"]');
+    
+    if (socialMediaTextarea) {
+        socialMediaTextarea.addEventListener('blur', function() {
+            try {
+                if (this.value.trim()) {
+                    const parsed = JSON.parse(this.value);
+                    this.value = JSON.stringify(parsed, null, 2);
+                }
+            } catch (e) {
+                // Invalid JSON, let the server handle validation
+            }
+        });
+    }
+    
+    // Tag suggestions (simple implementation)
+    const tagsInput = document.querySelector('input[name="tags"]');
+    if (tagsInput) {
+        const commonTags = ['friend', 'family', 'work', 'colleague', 'neighbor', 'acquaintance', 'professional', 'personal'];
+        
+        tagsInput.addEventListener('input', function() {
+            // Simple tag completion could be added here
+            // For now, just show placeholder with suggestions
+            if (this.value === '') {
+                this.placeholder = 'Try: ' + commonTags.slice(0, 3).join(', ') + '...';
+            }
+        });
+    }
+});
+
+// Form validation enhancement
+function validateForm() {
+    const name = document.querySelector('input[name="name"]').value.trim();
+    if (!name) {
+        alert('Name is required!');
+        return false;
+    }
+    
+    const socialMedia = document.querySelector('textarea[name="social_media"]').value.trim();
+    if (socialMedia) {
+        try {
+            JSON.parse(socialMedia);
+        } catch (e) {
+            alert('Social media must be valid JSON format!');
+            return false;
+        }
+    }
+    
+    return true;
+}
+</script>
+{% endblock %}

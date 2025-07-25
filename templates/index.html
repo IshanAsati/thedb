@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - Contact Manager{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Page header with statistics -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="mb-1">
+                    <i class="fas fa-users me-2"></i>{{ title }}
+                </h1>
+                <p class="text-muted mb-0">
+                    Showing {{ contacts|length }} of {{ total_contacts }} contacts
+                    {% if search_query %}
+                        (Search: "{{ search_query }}")
+                    {% elif tag_filter %}
+                        (Tag: "{{ tag_filter }}")
+                    {% endif %}
+                </p>
+            </div>
+            
+            <div class="text-end">
+                <div class="stats-card p-3 rounded">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <h3 class="mb-0">{{ total_contacts }}</h3>
+                            <small>Contacts</small>
+                        </div>
+                        <div class="col-6">
+                            <h3 class="mb-0">{{ total_tags }}</h3>
+                            <small>Tags</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter and action buttons -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <!-- Tag filter dropdown -->
+                {% if all_tags %}
+                <div class="btn-group me-2" role="group">
+                    <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fas fa-filter me-1"></i>Filter by Tag
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('index') }}">All Contacts</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        {% for tag in all_tags %}
+                        <li>
+                            <a class="dropdown-item{% if tag_filter == tag %} active{% endif %}" href="{{ url_for('index', tag=tag) }}">
+                                #{{ tag }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                
+                <!-- Clear filters button -->
+                {% if search_query or tag_filter %}
+                <a href="{{ url_for('index') }}" class="btn btn-outline-warning">
+                    <i class="fas fa-times me-1"></i>Clear Filters
+                </a>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-4 text-end">
+                <a href="{{ url_for('add_contact') }}" class="btn btn-success">
+                    <i class="fas fa-plus me-1"></i>Add Contact
+                </a>
+                <a href="{{ url_for('export_contacts') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-download me-1"></i>Export
+                </a>
+            </div>
+        </div>
+
+        <!-- Contacts grid -->
+        {% if contacts %}
+        <div class="row">
+            {% for contact in contacts %}
+            <div class="col-lg-6 col-xl-4 mb-4">
+                <div class="card contact-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-1">
+                                <a href="{{ url_for('view_contact', contact_id=contact.id) }}" class="text-decoration-none">
+                                    {{ contact.name }}
+                                </a>
+                            </h5>
+                            <small class="text-muted">#{{ contact.id }}</small>
+                        </div>
+                        
+                        {% if contact.nickname %}
+                        <p class="text-muted mb-1">
+                            <i class="fas fa-quote-left me-1"></i>"{{ contact.nickname }}"
+                        </p>
+                        {% endif %}
+                        
+                        {% if contact.birthday %}
+                        <p class="mb-2">
+                            <i class="fas fa-birthday-cake birthday-icon me-1"></i>
+                            {{ contact.birthday }}
+                        </p>
+                        {% endif %}
+                        
+                        {% if contact.personality_notes %}
+                        <p class="card-text text-muted small">
+                            {{ contact.personality_notes[:100] }}{% if contact.personality_notes|length > 100 %}...{% endif %}
+                        </p>
+                        {% endif %}
+                        
+                        <!-- Tags -->
+                        {% if contact.tags %}
+                        <div class="mb-3 tag-cloud">
+                            {{ contact.tags | format_tags | safe }}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Social media links -->
+                        {% if contact.social_media %}
+                        <div class="mb-3">
+                            {{ contact.social_media | format_social_media | safe }}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Action buttons -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a href="{{ url_for('view_contact', contact_id=contact.id) }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ url_for('edit_contact', contact_id=contact.id) }}" class="btn btn-outline-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form method="POST" action="{{ url_for('delete_contact', contact_id=contact.id) }}" class="d-inline">
+                                    <button type="submit" class="btn btn-outline-danger" 
+                                            onclick="return confirmDelete('{{ contact.name }}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            
+                            <small class="text-muted">
+                                {{ contact.created_at[:10] if contact.created_at else '' }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% else %}
+        <!-- Empty state -->
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-users fa-4x text-muted mb-3"></i>
+                <h3 class="text-muted">No Contacts Found</h3>
+                {% if search_query or tag_filter %}
+                <p class="text-muted">
+                    Try adjusting your search criteria or 
+                    <a href="{{ url_for('index') }}">view all contacts</a>.
+                </p>
+                {% else %}
+                <p class="text-muted">Get started by adding your first contact!</p>
+                {% endif %}
+            </div>
+            
+            <a href="{{ url_for('add_contact') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-plus me-2"></i>Add Your First Contact
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Quick search tips modal (optional) -->
+<div class="modal fade" id="searchTipsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Search Tips</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-search text-primary me-2"></i>Search by name, nickname, or tags</li>
+                    <li><i class="fas fa-filter text-primary me-2"></i>Use tag filters for precise results</li>
+                    <li><i class="fas fa-keyboard text-primary me-2"></i>Real-time search as you type</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    // Ctrl+/ to focus search
+    if (e.ctrlKey && e.key === '/') {
+        e.preventDefault();
+        document.querySelector('input[name="search"]').focus();
+    }
+    // Ctrl+N to add new contact
+    if (e.ctrlKey && e.key === 'n') {
+        e.preventDefault();
+        window.location.href = "{{ url_for('add_contact') }}";
+    }
+});
+</script>
+{% endblock %}
