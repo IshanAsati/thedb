@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Startup script for Contact Manager
+Startup script for The People DB
 Allows you to choose between different interfaces
 """
 
@@ -10,9 +10,9 @@ import subprocess
 
 def show_menu():
     print("\n" + "="*60)
-    print("🚀 CONTACT MANAGER - INTERFACE SELECTOR")
+    print("🚀 THE PEOPLE DB - INTERFACE SELECTOR")
     print("="*60)
-    print("Choose how you'd like to run the Contact Manager:")
+    print("Choose how you'd like to run The People DB:")
     print()
     print("1. 🌐 Web Interface (Flask) - Modern web app with Bootstrap")
     print("2. 🖥️  TUI Interface (Textual) - Modern terminal interface")
@@ -67,7 +67,7 @@ def run_cli_interface():
 
 def show_info():
     print("\n" + "="*60)
-    print("ℹ️  CONTACT MANAGER INFORMATION")
+    print("ℹ️  THE PEOPLE DB INFORMATION")
     print("="*60)
     print("📋 Features:")
     print("   • Add, view, edit, and delete contacts")

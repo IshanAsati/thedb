@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Simple CLI interface for the Contact Manager
+Simple CLI interface for The People DB
 This is a fallback interface that works without the textual library
 """
 
@@ -14,7 +14,7 @@ class SimpleContactCLI:
     
     def display_menu(self):
         print("\n" + "="*50)
-        print("📞 CONTACT MANAGER")
+        print("📞 THE PEOPLE DB")
         print("="*50)
         print("1. Add Contact")
         print("2. View All Contacts")
@@ -268,7 +268,7 @@ class SimpleContactCLI:
     
     def run(self):
         """Main application loop."""
-        print("🚀 Starting Contact Manager...")
+        print("🚀 Starting The People DB...")
         
         while True:
             try:

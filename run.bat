@@ -1,5 +1,5 @@
 @echo off
-title Contact Manager
-echo Starting Contact Manager...
+title The People DB
+echo Starting The People DB...
 python start.py
 pause

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Flask Web Application for Contact Manager
+Flask Web Application for The People DB
 Provides a web interface for managing contacts with Bootstrap UI
 """
 

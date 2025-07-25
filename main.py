@@ -204,7 +204,7 @@ class ContactDetailScreen(ModalScreen):
             self.dismiss(None)
 
 class ContactManagerApp(App):
-    """Main TUI application for managing contacts."""
+    """Main TUI application for The People DB."""
     
     CSS = """
     .contact-form {
@@ -412,7 +412,7 @@ class ContactManagerApp(App):
     def action_help(self):
         """Show help information."""
         help_text = """
-        🔧 Contact Manager Help
+        🔧 The People DB Help
         
         Keyboard Shortcuts:
         • A - Add new contact

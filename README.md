@@ -1,6 +1,6 @@
-# Contact Manager - Multi-Interface Application
+# The People DB - Multi-Interface Application
 
-A lightweight contact management application built with Python. Features three different interfaces: a modern web app, a terminal user interface (TUI), and a simple command-line interface (CLI).
+A lightweight people management application built with Python. Features three different interfaces: a modern web app, a terminal user interface (TUI), and a simple command-line interface (CLI).
 
 ## Features
 
@@ -90,7 +90,7 @@ This interface works without any external dependencies and provides all the same
 ## File Structure
 
 ```
-Contact Manager/
+The People DB/
 ├── start.py         # Multi-interface launcher
 ├── app.py           # Flask web application
 ├── main.py          # Main TUI application (requires textual)
