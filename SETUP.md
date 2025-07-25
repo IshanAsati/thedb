@@ -41,4 +41,19 @@ Double-click `run.bat` for easy startup.
 - **Optional**: Pandas (for enhanced CSV export)
 - **CLI only**: No extra dependencies needed
 
-Enjoy your Contact Manager! 🎉
+### 7. Troubleshooting
+
+#### "no such column: like_as_friend" Error
+If you get this error after updating the app, your database needs migration:
+
+```bash
+# Option 1: Automatic migration (recommended)
+python start.py  # Migration runs automatically
+
+# Option 2: Manual migration
+python migrate_db.py
+```
+
+This happens when you have an existing database from before the relationship preferences feature was added.
+
+Enjoy The People DB! 🎉

@@ -16,6 +16,7 @@ class ContactDatabase:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
+        # Create the main contacts table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS contacts (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,6 +32,20 @@ class ContactDatabase:
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
+        
+        # Check if we need to add the new columns for existing databases
+        cursor.execute("PRAGMA table_info(contacts)")
+        columns = [column[1] for column in cursor.fetchall()]
+        
+        # Add like_as_friend column if it doesn't exist
+        if 'like_as_friend' not in columns:
+            cursor.execute('ALTER TABLE contacts ADD COLUMN like_as_friend BOOLEAN DEFAULT 0')
+            print("✅ Added 'like_as_friend' column to existing database")
+        
+        # Add like_romantically column if it doesn't exist
+        if 'like_romantically' not in columns:
+            cursor.execute('ALTER TABLE contacts ADD COLUMN like_romantically BOOLEAN DEFAULT 0')
+            print("✅ Added 'like_romantically' column to existing database")
         
         conn.commit()
         conn.close()
@@ -94,6 +109,10 @@ class ContactDatabase:
         row = cursor.fetchone()
         
         if row:
+            # Get column names to handle different schema versions
+            cursor.execute("PRAGMA table_info(contacts)")
+            columns = [column[1] for column in cursor.fetchall()]
+            
             contact = {
                 'id': row[0],
                 'name': row[1],
@@ -102,11 +121,27 @@ class ContactDatabase:
                 'personality_notes': row[4],
                 'social_media': json.loads(row[5]) if row[5] else {},
                 'tags': json.loads(row[6]) if row[6] else [],
-                'like_as_friend': bool(row[7]) if len(row) > 7 else False,
-                'like_romantically': bool(row[8]) if len(row) > 8 else False,
-                'created_at': row[9] if len(row) > 9 else row[7],
-                'updated_at': row[10] if len(row) > 10 else row[8]
             }
+            
+            # Handle new columns with backward compatibility
+            if 'like_as_friend' in columns and len(row) > 7:
+                contact['like_as_friend'] = bool(row[7])
+            else:
+                contact['like_as_friend'] = False
+                
+            if 'like_romantically' in columns and len(row) > 8:
+                contact['like_romantically'] = bool(row[8])
+            else:
+                contact['like_romantically'] = False
+            
+            # Handle created_at and updated_at with backward compatibility
+            if len(row) > 9:
+                contact['created_at'] = row[9]
+                contact['updated_at'] = row[10] if len(row) > 10 else row[9]
+            else:
+                contact['created_at'] = row[7] if len(row) > 7 else None
+                contact['updated_at'] = row[8] if len(row) > 8 else None
+            
             conn.close()
             return contact
         
