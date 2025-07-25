@@ -6,7 +6,7 @@ Provides a web interface for managing contacts with Bootstrap UI
 
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SelectField, SubmitField
+from wtforms import StringField, TextAreaField, SelectField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Optional
 from wtforms.widgets import TextArea
 import json
@@ -27,6 +27,8 @@ class ContactForm(FlaskForm):
     personality_notes = TextAreaField('Personality Notes', validators=[Optional()], render_kw={"class": "form-control", "rows": 4})
     social_media = TextAreaField('Social Media (JSON)', validators=[Optional()], render_kw={"class": "form-control", "rows": 3, "placeholder": '{"twitter": "@username", "instagram": "handle"}'})
     tags = StringField('Tags (comma-separated)', validators=[Optional()], render_kw={"class": "form-control", "placeholder": "friend, work, family"})
+    like_as_friend = BooleanField('I like this person as a friend', render_kw={"class": "form-check-input"})
+    like_romantically = BooleanField('I like this person romantically', render_kw={"class": "form-check-input"})
     submit = SubmitField('Save Contact', render_kw={"class": "btn btn-primary"})
 
 @app.route('/')
@@ -89,7 +91,9 @@ def add_contact():
                 birthday=form.birthday.data,
                 personality_notes=form.personality_notes.data,
                 social_media=social_media,
-                tags=tags
+                tags=tags,
+                like_as_friend=form.like_as_friend.data,
+                like_romantically=form.like_romantically.data
             )
             
             flash(f'Contact "{form.name.data}" added successfully!', 'success')
@@ -144,7 +148,9 @@ def edit_contact(contact_id):
                 birthday=form.birthday.data,
                 personality_notes=form.personality_notes.data,
                 social_media=social_media,
-                tags=tags
+                tags=tags,
+                like_as_friend=form.like_as_friend.data,
+                like_romantically=form.like_romantically.data
             )
             
             if success:
@@ -164,6 +170,8 @@ def edit_contact(contact_id):
         form.personality_notes.data = contact['personality_notes']
         form.social_media.data = json.dumps(contact['social_media'], indent=2) if contact['social_media'] else ''
         form.tags.data = ', '.join(contact['tags'])
+        form.like_as_friend.data = contact.get('like_as_friend', False)
+        form.like_romantically.data = contact.get('like_romantically', False)
     
     return render_template('edit_contact.html', form=form, contact=contact)
 

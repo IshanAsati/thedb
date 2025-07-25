@@ -31,30 +31,49 @@ class SimpleContactCLI:
         print("\n📝 ADD NEW CONTACT")
         print("-" * 30)
         
-        name = input("Name * (required): ").strip()
+        print("Name * (required):")
+        name = input("» ").strip()
         if not name:
             print("❌ Name is required!")
             return
         
-        nickname = input("Nickname: ").strip()
-        birthday = input("Birthday (YYYY-MM-DD): ").strip()
-        personality_notes = input("Personality notes: ").strip()
+        print("\nNickname:")
+        nickname = input("» ").strip()
+        
+        print("\nBirthday (YYYY-MM-DD):")
+        birthday = input("» ").strip()
+        
+        print("\nPersonality notes:")
+        personality_notes = input("» ").strip()
         
         # Social media
         print("\nSocial Media Links:")
         print("Enter platform and handle (press Enter to skip)")
         social_media = {}
         while True:
-            platform = input("Platform (or press Enter to finish): ").strip()
+            print("\nPlatform (or press Enter to finish):")
+            platform = input("» ").strip()
             if not platform:
                 break
-            handle = input(f"{platform} handle: ").strip()
+            print(f"{platform} handle:")
+            handle = input("» ").strip()
             if handle:
                 social_media[platform] = handle
         
         # Tags
-        tags_input = input("Tags (comma-separated): ").strip()
+        print("\nTags (comma-separated):")
+        tags_input = input("» ").strip()
         tags = [tag.strip() for tag in tags_input.split(',') if tag.strip()]
+        
+        # New relationship fields
+        print("\nRelationship Preferences:")
+        print("Do you like this person as a friend? (y/n):")
+        like_as_friend_input = input("» ").strip().lower()
+        like_as_friend = like_as_friend_input in ['y', 'yes', '1', 'true']
+        
+        print("\nDo you like this person romantically? (y/n):")
+        like_romantically_input = input("» ").strip().lower()
+        like_romantically = like_romantically_input in ['y', 'yes', '1', 'true']
         
         try:
             contact_id = self.db.add_contact(
@@ -63,7 +82,9 @@ class SimpleContactCLI:
                 birthday=birthday,
                 personality_notes=personality_notes,
                 social_media=social_media,
-                tags=tags
+                tags=tags,
+                like_as_friend=like_as_friend,
+                like_romantically=like_romantically
             )
             print(f"✅ Contact '{name}' added successfully! (ID: {contact_id})")
         except Exception as e:
@@ -107,6 +128,27 @@ class SimpleContactCLI:
             if len(notes) > 60:
                 notes = notes[:60] + "..."
             print(f"💭 Notes: {notes}")
+        
+        # Display relationship preferences
+        relationship_status = []
+        if contact.get('like_as_friend'):
+            relationship_status.append("💙 Friend")
+        if contact.get('like_romantically'):
+            relationship_status.append("💕 Romantic")
+        
+        if relationship_status:
+            print(f"💖 Relationship: {' | '.join(relationship_status)}")
+        
+        # Relationship preferences
+        relationship_info = []
+        if contact.get('like_as_friend'):
+            relationship_info.append("👫 Friend")
+        if contact.get('like_romantically'):
+            relationship_info.append("💕 Romantic")
+        if relationship_info:
+            print(f"💖 Relationship: {' | '.join(relationship_info)}")
+        elif contact.get('like_as_friend') is False and contact.get('like_romantically') is False:
+            print("💖 Relationship: ❌ Not interested")
     
     def search_contacts(self):
         query = input("\n🔍 Enter search term (name, nickname, or tag): ").strip()
@@ -165,6 +207,21 @@ class SimpleContactCLI:
         else:
             tags = [tag.strip() for tag in tags_input.split(',') if tag.strip()]
         
+        # Relationship preferences
+        current_friend = "Yes" if contact.get('like_as_friend') else "No"
+        friend_input = input(f"Like as friend [{current_friend}] (y/n): ").strip().lower()
+        if friend_input == '':
+            like_as_friend = contact.get('like_as_friend', False)
+        else:
+            like_as_friend = friend_input in ['y', 'yes', '1', 'true']
+        
+        current_romantic = "Yes" if contact.get('like_romantically') else "No"
+        romantic_input = input(f"Like romantically [{current_romantic}] (y/n): ").strip().lower()
+        if romantic_input == '':
+            like_romantically = contact.get('like_romantically', False)
+        else:
+            like_romantically = romantic_input in ['y', 'yes', '1', 'true']
+        
         try:
             success = self.db.update_contact(
                 contact_id=contact_id,
@@ -172,7 +229,9 @@ class SimpleContactCLI:
                 nickname=nickname,
                 birthday=birthday,
                 personality_notes=personality_notes,
-                tags=tags
+                tags=tags,
+                like_as_friend=like_as_friend,
+                like_romantically=like_romantically
             )
             if success:
                 print(f"✅ Contact '{name}' updated successfully!")

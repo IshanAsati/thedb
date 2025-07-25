@@ -125,6 +125,30 @@
                         </div>
                     </div>
                     
+                    <!-- Relationship preferences -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 class="text-muted mb-3">
+                                <i class="fas fa-heart me-2"></i>Relationship Preferences
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check mb-3">
+                                        {{ form.like_as_friend() }}
+                                        {{ form.like_as_friend.label(class="form-check-label") }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check mb-3">
+                                        {{ form.like_romantically() }}
+                                        {{ form.like_romantically.label(class="form-check-label") }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <!-- Action buttons -->
                     <div class="d-flex justify-content-between">
                         <div>

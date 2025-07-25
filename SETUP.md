@@ -28,10 +28,11 @@ Double-click `run.bat` for easy startup.
 
 ### 5. Features
 - ✅ Add, edit, delete contacts
-- ✅ Search and filter by name/tags
+- ✅ Search and filter by name/tags  
 - ✅ Export to CSV
 - ✅ Color-coded tags
 - ✅ Social media integration
+- ✅ Relationship preferences (Friend/Romantic status)
 - ✅ Mobile-responsive web interface
 
 ### 6. Dependencies

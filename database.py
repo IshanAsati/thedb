@@ -25,6 +25,8 @@ class ContactDatabase:
                 personality_notes TEXT,
                 social_media TEXT,
                 tags TEXT,
+                like_as_friend BOOLEAN DEFAULT 0,
+                like_romantically BOOLEAN DEFAULT 0,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
@@ -35,7 +37,8 @@ class ContactDatabase:
     
     def add_contact(self, name: str, nickname: str = "", birthday: str = "", 
                    personality_notes: str = "", social_media: dict = None, 
-                   tags: List[str] = None) -> int:
+                   tags: List[str] = None, like_as_friend: bool = False,
+                   like_romantically: bool = False) -> int:
         """Add a new contact to the database."""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
@@ -44,9 +47,9 @@ class ContactDatabase:
         tags_json = json.dumps(tags or [])
         
         cursor.execute('''
-            INSERT INTO contacts (name, nickname, birthday, personality_notes, social_media, tags)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ''', (name, nickname, birthday, personality_notes, social_media_json, tags_json))
+            INSERT INTO contacts (name, nickname, birthday, personality_notes, social_media, tags, like_as_friend, like_romantically)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (name, nickname, birthday, personality_notes, social_media_json, tags_json, like_as_friend, like_romantically))
         
         contact_id = cursor.lastrowid
         conn.commit()
@@ -72,8 +75,10 @@ class ContactDatabase:
                 'personality_notes': row[4],
                 'social_media': json.loads(row[5]) if row[5] else {},
                 'tags': json.loads(row[6]) if row[6] else [],
-                'created_at': row[7],
-                'updated_at': row[8]
+                'like_as_friend': bool(row[7]) if len(row) > 7 else False,
+                'like_romantically': bool(row[8]) if len(row) > 8 else False,
+                'created_at': row[9] if len(row) > 9 else row[7],
+                'updated_at': row[10] if len(row) > 10 else row[8]
             }
             contacts.append(contact)
         
@@ -97,8 +102,10 @@ class ContactDatabase:
                 'personality_notes': row[4],
                 'social_media': json.loads(row[5]) if row[5] else {},
                 'tags': json.loads(row[6]) if row[6] else [],
-                'created_at': row[7],
-                'updated_at': row[8]
+                'like_as_friend': bool(row[7]) if len(row) > 7 else False,
+                'like_romantically': bool(row[8]) if len(row) > 8 else False,
+                'created_at': row[9] if len(row) > 9 else row[7],
+                'updated_at': row[10] if len(row) > 10 else row[8]
             }
             conn.close()
             return contact
@@ -108,7 +115,8 @@ class ContactDatabase:
     
     def update_contact(self, contact_id: int, name: str = None, nickname: str = None,
                       birthday: str = None, personality_notes: str = None,
-                      social_media: dict = None, tags: List[str] = None) -> bool:
+                      social_media: dict = None, tags: List[str] = None,
+                      like_as_friend: bool = None, like_romantically: bool = None) -> bool:
         """Update an existing contact."""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
@@ -126,14 +134,16 @@ class ContactDatabase:
         updated_personality = personality_notes if personality_notes is not None else current['personality_notes']
         updated_social = social_media if social_media is not None else current['social_media']
         updated_tags = tags if tags is not None else current['tags']
+        updated_friend = like_as_friend if like_as_friend is not None else current.get('like_as_friend', False)
+        updated_romantic = like_romantically if like_romantically is not None else current.get('like_romantically', False)
         
         cursor.execute('''
             UPDATE contacts 
             SET name = ?, nickname = ?, birthday = ?, personality_notes = ?, 
-                social_media = ?, tags = ?, updated_at = CURRENT_TIMESTAMP
+                social_media = ?, tags = ?, like_as_friend = ?, like_romantically = ?, updated_at = CURRENT_TIMESTAMP
             WHERE id = ?
         ''', (updated_name, updated_nickname, updated_birthday, updated_personality,
-              json.dumps(updated_social), json.dumps(updated_tags), contact_id))
+              json.dumps(updated_social), json.dumps(updated_tags), updated_friend, updated_romantic, contact_id))
         
         success = cursor.rowcount > 0
         conn.commit()
@@ -177,8 +187,10 @@ class ContactDatabase:
                 'personality_notes': row[4],
                 'social_media': json.loads(row[5]) if row[5] else {},
                 'tags': json.loads(row[6]) if row[6] else [],
-                'created_at': row[7],
-                'updated_at': row[8]
+                'like_as_friend': bool(row[7]) if len(row) > 7 else False,
+                'like_romantically': bool(row[8]) if len(row) > 8 else False,
+                'created_at': row[9] if len(row) > 9 else row[7],
+                'updated_at': row[10] if len(row) > 10 else row[8]
             }
             contacts.append(contact)
         
@@ -214,6 +226,8 @@ class ContactDatabase:
                 'Personality Notes': contact['personality_notes'],
                 'Social Media': json.dumps(contact['social_media']),
                 'Tags': ', '.join(contact['tags']),
+                'Like as Friend': 'Yes' if contact.get('like_as_friend') else 'No',
+                'Like Romantically': 'Yes' if contact.get('like_romantically') else 'No',
                 'Created At': contact['created_at'],
                 'Updated At': contact['updated_at']
             }

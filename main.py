@@ -2,7 +2,7 @@ from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal, Vertical, ScrollableContainer
 from textual.widgets import (
     Header, Footer, Input, Button, DataTable, TextArea, 
-    Static, Label, Select, Collapsible, TabbedContent, TabPane
+    Static, Label, Select, Collapsible, TabbedContent, TabPane, Checkbox
 )
 from textual.screen import Screen, ModalScreen
 from textual.binding import Binding
@@ -76,6 +76,18 @@ class ContactFormScreen(ModalScreen):
                     id="tags_input"
                 )
                 
+                yield Label("Relationship Preferences")
+                yield Checkbox(
+                    "I like this person as a friend",
+                    value=self.contact_data.get('like_as_friend', False),
+                    id="like_friend_checkbox"
+                )
+                yield Checkbox(
+                    "I like this person romantically",
+                    value=self.contact_data.get('like_romantically', False),
+                    id="like_romantic_checkbox"
+                )
+                
                 with Horizontal():
                     yield Button("Save", variant="primary", id="save_btn")
                     yield Button("Cancel", variant="default", id="cancel_btn")
@@ -110,13 +122,19 @@ class ContactFormScreen(ModalScreen):
             tags_text = self.query_one("#tags_input", Input).value.strip()
             tags = [tag.strip() for tag in tags_text.split(',') if tag.strip()]
             
+            # Get checkbox values
+            like_as_friend = self.query_one("#like_friend_checkbox", Checkbox).value
+            like_romantically = self.query_one("#like_romantic_checkbox", Checkbox).value
+            
             contact_data = {
                 'name': name,
                 'nickname': nickname,
                 'birthday': birthday,
                 'personality_notes': notes,
                 'social_media': social_media,
-                'tags': tags
+                'tags': tags,
+                'like_as_friend': like_as_friend,
+                'like_romantically': like_romantically
             }
             
             if self.edit_mode:
@@ -168,6 +186,15 @@ class ContactDetailScreen(ModalScreen):
                     yield Static("🏷️ Tags", classes="section-header")
                     tags_text = self.format_tags(self.contact['tags'])
                     yield Static(tags_text)
+                    yield Static("")  # Spacer
+                
+                # Relationship preferences section
+                if self.contact.get('like_as_friend') or self.contact.get('like_romantically'):
+                    yield Static("💖 Relationship Preferences", classes="section-header")
+                    if self.contact.get('like_as_friend'):
+                        yield Static("💙 I like this person as a friend")
+                    if self.contact.get('like_romantically'):
+                        yield Static("💕 I like this person romantically")
                     yield Static("")  # Spacer
                 
                 # Metadata
@@ -300,7 +327,7 @@ class ContactManagerApp(App):
     def setup_contacts_table(self):
         """Set up the contacts data table."""
         table = self.query_one("#contacts_table", DataTable)
-        table.add_columns("ID", "Name", "Nickname", "Birthday", "Tags")
+        table.add_columns("ID", "Name", "Nickname", "Birthday", "Relationship", "Tags")
         table.cursor_type = "row"
         self.populate_contacts_table()
     
@@ -320,11 +347,21 @@ class ContactManagerApp(App):
         
         for contact in contacts_to_show:
             tags_str = ", ".join(contact.get('tags', []))
+            
+            # Format relationship status
+            relationship_status = []
+            if contact.get('like_as_friend'):
+                relationship_status.append("💙Friend")
+            if contact.get('like_romantically'):
+                relationship_status.append("💕Romantic")
+            relationship_str = " | ".join(relationship_status) if relationship_status else ""
+            
             table.add_row(
                 str(contact.get('id', '')),
                 contact.get('name', ''),
                 contact.get('nickname', ''),
                 contact.get('birthday', ''),
+                relationship_str,
                 tags_str,
                 key=contact.get('id')
             )
@@ -376,7 +413,9 @@ class ContactManagerApp(App):
                         birthday=result['birthday'],
                         personality_notes=result['personality_notes'],
                         social_media=result['social_media'],
-                        tags=result['tags']
+                        tags=result['tags'],
+                        like_as_friend=result['like_as_friend'],
+                        like_romantically=result['like_romantically']
                     )
                     self.refresh_contacts()
                     self.populate_contacts_table()
@@ -506,7 +545,9 @@ class ContactManagerApp(App):
                         birthday=result['birthday'],
                         personality_notes=result['personality_notes'],
                         social_media=result['social_media'],
-                        tags=result['tags']
+                        tags=result['tags'],
+                        like_as_friend=result['like_as_friend'],
+                        like_romantically=result['like_romantically']
                     )
                     if success:
                         self.refresh_contacts()
