@@ -55,6 +55,12 @@ class ContactFormScreen(ModalScreen):
                     id="birthday_input"
                 )
                 
+                yield Label("Address")
+                yield TextArea(
+                    text=self.contact_data.get('address', ''),
+                    id="address_textarea"
+                )
+                
                 yield Label("Personality Notes")
                 yield TextArea(
                     text=self.contact_data.get('personality_notes', ''),
@@ -108,6 +114,7 @@ class ContactFormScreen(ModalScreen):
             
             nickname = self.query_one("#nickname_input", Input).value.strip()
             birthday = self.query_one("#birthday_input", Input).value.strip()
+            address = self.query_one("#address_textarea", TextArea).text.strip()
             notes = self.query_one("#notes_textarea", TextArea).text.strip()
             
             # Parse social media JSON
@@ -130,6 +137,7 @@ class ContactFormScreen(ModalScreen):
                 'name': name,
                 'nickname': nickname,
                 'birthday': birthday,
+                'address': address,
                 'personality_notes': notes,
                 'social_media': social_media,
                 'tags': tags,
@@ -165,6 +173,10 @@ class ContactDetailScreen(ModalScreen):
                 yield Static(f"Name: {self.contact.get('name', 'N/A')}")
                 yield Static(f"Nickname: {self.contact.get('nickname', 'N/A')}")
                 yield Static(f"Birthday: {self.contact.get('birthday', 'N/A')}")
+                
+                # Address section
+                if self.contact.get('address'):
+                    yield Static(f"📍 Address: {self.contact['address']}")
                 
                 yield Static("")  # Spacer
                 
@@ -411,6 +423,7 @@ class ContactManagerApp(App):
                         name=result['name'],
                         nickname=result['nickname'],
                         birthday=result['birthday'],
+                        address=result['address'],
                         personality_notes=result['personality_notes'],
                         social_media=result['social_media'],
                         tags=result['tags'],
@@ -543,6 +556,7 @@ class ContactManagerApp(App):
                         name=result['name'],
                         nickname=result['nickname'],
                         birthday=result['birthday'],
+                        address=result['address'],
                         personality_notes=result['personality_notes'],
                         social_media=result['social_media'],
                         tags=result['tags'],

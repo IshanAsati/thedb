@@ -4,13 +4,12 @@ Flask Web Application for The People DB
 Provides a web interface for managing contacts with Bootstrap UI
 """
 
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file
-from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SelectField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Optional
-from wtforms.widgets import TextArea
 import json
 import os
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file
+from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField, BooleanField, SubmitField
+from wtforms.validators import DataRequired, Optional
 from datetime import datetime
 from database import ContactDatabase
 
@@ -24,6 +23,7 @@ class ContactForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()], render_kw={"class": "form-control"})
     nickname = StringField('Nickname', validators=[Optional()], render_kw={"class": "form-control"})
     birthday = StringField('Birthday (YYYY-MM-DD)', validators=[Optional()], render_kw={"class": "form-control", "placeholder": "2000-01-15"})
+    address = TextAreaField('Address', validators=[Optional()], render_kw={"class": "form-control", "rows": 3, "placeholder": "Street Address\nCity, State/Province\nCountry"})
     personality_notes = TextAreaField('Personality Notes', validators=[Optional()], render_kw={"class": "form-control", "rows": 4})
     social_media = TextAreaField('Social Media (JSON)', validators=[Optional()], render_kw={"class": "form-control", "rows": 3, "placeholder": '{"twitter": "@username", "instagram": "handle"}'})
     tags = StringField('Tags (comma-separated)', validators=[Optional()], render_kw={"class": "form-control", "placeholder": "friend, work, family"})
@@ -89,6 +89,7 @@ def add_contact():
                 name=form.name.data,
                 nickname=form.nickname.data,
                 birthday=form.birthday.data,
+                address=form.address.data,
                 personality_notes=form.personality_notes.data,
                 social_media=social_media,
                 tags=tags,
@@ -146,6 +147,7 @@ def edit_contact(contact_id):
                 name=form.name.data,
                 nickname=form.nickname.data,
                 birthday=form.birthday.data,
+                address=form.address.data,
                 personality_notes=form.personality_notes.data,
                 social_media=social_media,
                 tags=tags,
@@ -167,6 +169,7 @@ def edit_contact(contact_id):
         form.name.data = contact['name']
         form.nickname.data = contact['nickname']
         form.birthday.data = contact['birthday']
+        form.address.data = contact.get('address', '')
         form.personality_notes.data = contact['personality_notes']
         form.social_media.data = json.dumps(contact['social_media'], indent=2) if contact['social_media'] else ''
         form.tags.data = ', '.join(contact['tags'])
@@ -244,18 +247,39 @@ def format_social_media(social_media):
     if not social_media:
         return ""
     
+    # Handle case where social_media might be a list instead of dict
+    if isinstance(social_media, list):
+        return ""  # Empty for lists
+    
+    if not isinstance(social_media, dict):
+        return ""  # Empty for non-dict types
+    
+    # Additional safety check for empty dict
+    if not social_media:
+        return ""
+    
     formatted = []
-    for platform, handle in social_media.items():
-        if platform.lower() == 'twitter':
-            formatted.append(f'<a href="https://twitter.com/{handle.lstrip("@")}" target="_blank" class="text-decoration-none"><i class="fab fa-twitter"></i> {handle}</a>')
-        elif platform.lower() == 'instagram':
-            formatted.append(f'<a href="https://instagram.com/{handle.lstrip("@")}" target="_blank" class="text-decoration-none"><i class="fab fa-instagram"></i> {handle}</a>')
-        elif platform.lower() == 'linkedin':
-            formatted.append(f'<a href="https://linkedin.com/in/{handle.lstrip("@")}" target="_blank" class="text-decoration-none"><i class="fab fa-linkedin"></i> {handle}</a>')
-        elif platform.lower() == 'github':
-            formatted.append(f'<a href="https://github.com/{handle.lstrip("@")}" target="_blank" class="text-decoration-none"><i class="fab fa-github"></i> {handle}</a>')
-        else:
-            formatted.append(f'<span class="badge bg-secondary me-1">{platform}: {handle}</span>')
+    try:
+        for platform, handle in social_media.items():
+            if not platform or not handle:  # Skip empty keys/values
+                continue
+                
+            platform_lower = str(platform).lower()
+            handle_str = str(handle)
+            
+            if platform_lower == 'twitter':
+                formatted.append(f'<a href="https://twitter.com/{handle_str.lstrip("@")}" target="_blank" class="text-decoration-none"><i class="fab fa-twitter"></i> {handle_str}</a>')
+            elif platform_lower == 'instagram':
+                formatted.append(f'<a href="https://instagram.com/{handle_str.lstrip("@")}" target="_blank" class="text-decoration-none"><i class="fab fa-instagram"></i> {handle_str}</a>')
+            elif platform_lower == 'linkedin':
+                formatted.append(f'<a href="https://linkedin.com/in/{handle_str.lstrip("@")}" target="_blank" class="text-decoration-none"><i class="fab fa-linkedin"></i> {handle_str}</a>')
+            elif platform_lower == 'github':
+                formatted.append(f'<a href="https://github.com/{handle_str.lstrip("@")}" target="_blank" class="text-decoration-none"><i class="fab fa-github"></i> {handle_str}</a>')
+            else:
+                formatted.append(f'<span class="badge bg-secondary me-1">{platform}: {handle_str}</span>')
+    except Exception as e:
+        # If anything goes wrong, return empty string
+        return ""
     
     return ' '.join(formatted)
 

@@ -52,6 +52,15 @@
                                     </td>
                                 </tr>
                                 {% endif %}
+                                {% if contact.address %}
+                                <tr>
+                                    <td class="fw-bold text-muted">Address:</td>
+                                    <td>
+                                        <i class="fas fa-map-marker-alt text-info me-2"></i>
+                                        <div style="white-space: pre-line;">{{ contact.address }}</div>
+                                    </td>
+                                </tr>
+                                {% endif %}
                             </tbody>
                         </table>
                     </div>

@@ -43,6 +43,9 @@ class SimpleContactCLI:
         print("\nBirthday (YYYY-MM-DD):")
         birthday = input("» ").strip()
         
+        print("\nAddress:")
+        address = input("» ").strip()
+        
         print("\nPersonality notes:")
         personality_notes = input("» ").strip()
         
@@ -80,6 +83,7 @@ class SimpleContactCLI:
                 name=name,
                 nickname=nickname,
                 birthday=birthday,
+                address=address,
                 personality_notes=personality_notes,
                 social_media=social_media,
                 tags=tags,
@@ -110,6 +114,9 @@ class SimpleContactCLI:
             print(f"Nickname: {contact['nickname']}")
         if contact.get('birthday'):
             print(f"🎂 Birthday: {contact['birthday']}")
+        if contact.get('address'):
+            address_lines = contact['address'].replace('\n', ' • ')
+            print(f"📍 Address: {address_lines}")
         
         if contact.get('tags'):
             # Color-code tags (simple ANSI colors)
@@ -195,6 +202,10 @@ class SimpleContactCLI:
         if birthday == '':
             birthday = contact.get('birthday', '')
             
+        address = input(f"Address [{contact.get('address', '')[:30]}...]: ").strip()
+        if address == '':
+            address = contact.get('address', '')
+            
         personality_notes = input(f"Notes [{contact.get('personality_notes', '')[:30]}...]: ").strip()
         if personality_notes == '':
             personality_notes = contact.get('personality_notes', '')
@@ -228,6 +239,7 @@ class SimpleContactCLI:
                 name=name,
                 nickname=nickname,
                 birthday=birthday,
+                address=address,
                 personality_notes=personality_notes,
                 tags=tags,
                 like_as_friend=like_as_friend,

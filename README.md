@@ -1,73 +1,94 @@
-# The People DB - Multi-Interface Application
+# The People DB - Multi-Interface Contact Management System
 
-A lightweight people management application built with Python. Features three different interfaces: a modern web app, a terminal user interface (TUI), and a simple command-line interface (CLI).
+A comprehensive, lightweight contact management application built with Python. Features three different interfaces: a modern web app, a terminal user interface (TUI), and a simple command-line interface (CLI).
 
-## Features
+![Python](https://img.shields.io/badge/Python-3.7+-blue.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
 
-✨ **Core Functionality:**
-- Add, view, edit, and delete contacts
-- Store: name, nickname, birthday, personality notes, social media links, custom tags
-- SQLite database for reliable local storage
-- Export contacts to CSV format
+## 🌟 Features
 
-🔍 **Search & Filter:**
-- Search by name, nickname, or tags
-- Filter contacts by specific tags
-- View all unique tags with usage statistics
+### Core Functionality
+- **Complete Contact Management**: Add, view, edit, and delete contacts
+- **Rich Contact Data**: Store name, nickname, birthday, address, personality notes, social media links, and custom tags
+- **Relationship Preferences**: Track whether you like someone as a friend and/or romantically
+- **Reliable Storage**: SQLite database for secure local data storage
+- **Data Export**: Export all contacts to CSV format with timestamps
 
-🎨 **User Interface Options:**
-- Modern web interface (Flask + Bootstrap) - accessible via browser
-- Modern TUI with tabbed interface (requires textual library)
-- Color-coded tags for better visualization
-- Simple CLI fallback interface
-- Keyboard shortcuts for quick navigation
+### Search & Organization
+- **Powerful Search**: Search across names, nicknames, tags, and notes
+- **Tag-Based Filtering**: Organize and filter contacts by custom tags
+- **Tag Statistics**: View all unique tags with usage counts
+- **Color-Coded Tags**: Visual organization with consistent tag coloring
 
-## Installation
+### Multiple Interfaces
+- **🌐 Web Interface**: Modern, responsive web app with Bootstrap UI
+- **🖥️ TUI Interface**: Rich terminal interface with keyboard shortcuts and mouse support  
+- **📝 CLI Interface**: Simple command-line interface requiring no external dependencies
+- **🚀 Unified Launcher**: Easy interface selection via start.py
 
-1. **Clone or download the project files**
-2. **Install dependencies:**
+## 📦 Quick Start
 
-```powershell
-pip install textual rich pandas flask wtforms flask-wtf
-```
+### Prerequisites
+- Python 3.7 or higher
+- Git (optional, for cloning)
 
-*Note: If you don't want to install these dependencies, you can use the simple CLI interface (cli.py) which only requires the built-in Python libraries.*
+### Installation
 
-## Usage
+1. **Clone or download the project**
+   ```bash
+   git clone https://github.com/IshanAsati/thedb.git
+   cd thedb
+   ```
 
-### Option 1: Multi-Interface Launcher (Recommended)
+2. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-```powershell
+3. **Run the application**
+   ```bash
+   python start.py
+   ```
+
+### Windows Users
+Double-click `run.bat` for easy startup.
+
+## 🚀 Usage
+
+### Multi-Interface Launcher (Recommended)
+
+```bash
 python start.py
 ```
 
-Choose from:
-1. **Web Interface** - Modern browser-based interface
-2. **TUI Interface** - Rich terminal interface
-3. **CLI Interface** - Simple command-line interface
+This presents a menu to choose your preferred interface:
 
-### Option 2: Direct Interface Access
+1. **Web Interface** - Browser-based with responsive design (http://localhost:5000)
+2. **TUI Interface** - Rich terminal experience with keyboard shortcuts
+3. **CLI Interface** - Simple menu-driven interface
+4. **Database Utilities** - Migration and repair tools
+5. **Exit**
 
-#### Web Interface (Flask + Bootstrap)
+### Direct Interface Access
 
-```powershell
+#### 🌐 Web Interface
+```bash
 python app.py
 ```
-
 Then open your browser to: `http://localhost:5000`
 
 **Features:**
-- Responsive Bootstrap design
-- Add/edit contacts with forms
-- Search and filter functionality
-- Tag-based filtering
-- CSV export
+- Responsive Bootstrap 5 design
+- Form-based contact management with address field
+- Real-time search and filtering
+- Tag-based organization with color coding
 - Social media link integration
+- One-click CSV export
 - Mobile-friendly interface
 
-#### TUI Interface (Textual)
-
-```powershell
+#### 🖥️ TUI Interface  
+```bash
 python main.py
 ```
 
@@ -76,41 +97,55 @@ python main.py
 - `S` - Focus search bar
 - `E` - Export to CSV
 - `R` - Refresh contacts
-- `Q` - Quit application
+- `Q` - Quit application  
 - `?` - Show help
+- `Enter` - View contact details
+- `Tab` - Navigate between tabs
 
-#### Simple CLI Interface
-
-```powershell
+#### 📝 CLI Interface
+```bash
 python cli.py
 ```
 
-This interface works without any external dependencies and provides all the same functionality through a menu-driven interface.
+**Features:**
+- No external dependencies required
+- Menu-driven navigation
+- Color-coded output with relationship status
+- Full CRUD operations including address management
+- Built-in export functionality
 
-## File Structure
+## 🗂️ Project Structure
 
 ```
 The People DB/
-├── start.py         # Multi-interface launcher
-├── app.py           # Flask web application
-├── main.py          # Main TUI application (requires textual)
-├── cli.py           # Simple CLI interface (no dependencies)
-├── database.py      # Database operations and contact management
-├── requirements.txt # Python dependencies
-├── README.md        # This file
-├── templates/       # HTML templates for web interface
-│   ├── base.html
-│   ├── index.html
-│   ├── add_contact.html
-│   ├── edit_contact.html
-│   └── view_contact.html
-├── static/          # Static files (CSS, JS, images)
-└── contacts.db      # SQLite database (created automatically)
+├── start.py              # Multi-interface launcher
+├── app.py               # Flask web application
+├── main.py              # Textual TUI application
+├── cli.py               # Simple CLI interface
+├── database.py          # SQLite database operations
+├── system_check.py      # System validation utility
+├── repair_db.py         # Database repair utility
+├── migrate_db.py        # Database migration tool
+├── requirements.txt     # Python dependencies
+├── README.md           # This documentation
+├── SETUP.md            # Quick setup guide
+├── CHANGELOG.md        # Version history
+├── PROJECT_STRUCTURE.md # Detailed project structure
+├── LICENSE             # MIT license
+├── run.bat             # Windows batch launcher
+├── templates/          # HTML templates for web interface
+│   ├── base.html       # Base template with Bootstrap
+│   ├── index.html      # Contact listing page
+│   ├── add_contact.html    # Add contact form
+│   ├── edit_contact.html   # Edit contact form
+│   └── view_contact.html   # Contact detail view
+├── static/             # Static web assets (auto-created)
+└── contacts.db         # SQLite database (auto-created)
 ```
 
-## Database Schema
+## 🗄️ Database Schema
 
-The application uses SQLite with the following schema:
+The application uses SQLite with the following optimized schema:
 
 ```sql
 CREATE TABLE contacts (
@@ -118,107 +153,282 @@ CREATE TABLE contacts (
     name TEXT NOT NULL,
     nickname TEXT,
     birthday TEXT,
+    address TEXT,                    -- NEW: Full address support
     personality_notes TEXT,
-    social_media TEXT,  -- JSON string
-    tags TEXT,          -- JSON string
+    social_media TEXT,              -- JSON: {"twitter": "@handle", "instagram": "user"}
+    tags TEXT,                      -- JSON: ["friend", "work", "family"]
+    like_as_friend BOOLEAN DEFAULT 0,
+    like_romantically BOOLEAN DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
-## Features in Detail
+### Recent Updates
+- ✅ **Address Field**: Full address support across all interfaces
+- ✅ **Enhanced Error Handling**: Robust JSON parsing with fallbacks
+- ✅ **Database Repair**: Automatic corruption detection and repair
+- ✅ **Improved Documentation**: Comprehensive guides and structure docs
+- `Tab` - Navigate between tabs
 
-### Contact Management
-- **Add Contact**: Full form with validation
-- **Edit Contact**: Modify existing contact information
-- **Delete Contact**: Remove contacts with confirmation
-- **View Details**: Detailed contact information display
+#### 📝 CLI Interface
+```bash
+python cli.py
+```
 
-### Search & Filter
-- **Text Search**: Search across names, nicknames, and tags
-- **Tag Filtering**: Filter contacts by specific tags
-- **Tag Statistics**: View all tags with usage counts
+**Features:**
+- No external dependencies required
+- Menu-driven navigation
+- Color-coded output
+- Relationship status indicators
+- Full CRUD operations
 
-### Data Export
-- **CSV Export**: Export all contacts to CSV format
-- **Timestamped Files**: Automatic filename generation with timestamps
-- **Full Data**: Includes all contact fields in export
+## 🗂️ Project Structure
 
-### Color-Coded Tags
-Tags are displayed with different colors for better visual organization:
-- Red, Blue, Green, Yellow, Magenta, Cyan rotation
-- Consistent coloring based on tag names
-- Works in both TUI and CLI interfaces
+```
+The People DB/
+├── start.py              # Multi-interface launcher
+├── app.py               # Flask web application
+├── main.py              # Textual TUI application
+├── cli.py               # Simple CLI interface
+├── database.py          # SQLite database operations
+├── repair_db.py         # Database repair utility
+├── migrate_db.py        # Database migration tool
+├── requirements.txt     # Python dependencies
+├── README.md           # This documentation
+├── SETUP.md            # Quick setup guide
+├── LICENSE             # MIT license
+├── run.bat             # Windows batch launcher
+├── templates/          # HTML templates for web interface
+│   ├── base.html       # Base template with Bootstrap
+│   ├── index.html      # Contact listing page
+│   ├── add_contact.html    # Add contact form
+│   ├── edit_contact.html   # Edit contact form
+│   └── view_contact.html   # Contact detail view
+├── static/             # Static web assets (auto-created)
+└── contacts.db         # SQLite database (auto-created)
+```
 
-## Usage Examples
+## 🗄️ Database Schema
+
+The application uses SQLite with the following optimized schema:
+
+```sql
+CREATE TABLE contacts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    nickname TEXT,
+    birthday TEXT,
+    address TEXT,
+    personality_notes TEXT,
+    social_media TEXT,      -- JSON: {"twitter": "@handle", "instagram": "user"}
+    tags TEXT,              -- JSON: ["friend", "work", "family"]
+    like_as_friend BOOLEAN DEFAULT 0,
+    like_romantically BOOLEAN DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+## 📊 Data Examples
 
 ### Adding a Contact
 ```
 Name: John Doe
 Nickname: Johnny
 Birthday: 1990-05-15
-Personality Notes: Friendly, loves hiking and photography
+Address: 123 Main St
+         New York, NY 10001
+         USA
+Personality Notes: Friendly photographer who loves hiking
 Social Media: {"twitter": "@johndoe", "instagram": "john.doe.photos"}
-Tags: friend, photographer, outdoor
+Tags: friend, photographer, outdoor, travel
+Relationship: ✓ Friend  ✗ Romantic
 ```
 
-### Searching
-- Search "photo" → finds contacts with "photographer" tag or photography notes
-- Search "friend" → finds all contacts tagged as friends
-- Search "John" → finds contacts with "John" in name or nickname
+### Search Examples
+- Search **"photo"** → finds contacts with "photographer" tag or photography notes
+- Search **"friend"** → finds all contacts tagged as friends
+- Search **"John"** → finds contacts with "John" in name or nickname
+- Filter by **"work"** tag → shows only work-related contacts
 
-### Tag Management
-- View all tags with usage statistics
-- Filter contacts by specific tags
-- Color-coded display for easy identification
+## 🔧 Advanced Features
 
-## Technical Details
+### Database Utilities
 
-### Dependencies
-- **flask**: Web framework (for web interface)
-- **wtforms**: Form handling (for web interface)
-- **flask-wtf**: Flask integration for WTForms
-- **textual**: Modern TUI framework (optional, for main.py)
-- **rich**: Rich text formatting (used by textual)
-- **sqlite3**: Database (built-in Python library)
-- **json**: Data serialization (built-in Python library)
-- **pandas**: CSV export (optional, but recommended)
+#### Automatic Migration
+The database schema is automatically updated when you run the application. If you encounter column errors, the system will:
+- Detect missing columns
+- Add new fields safely
+- Preserve all existing data
+- Show migration progress
 
-### Data Storage
-- Local SQLite database (`contacts.db`)
-- JSON serialization for complex fields (social media, tags)
-- Automatic timestamp tracking for created/updated dates
+#### Manual Repair
+If you encounter data corruption:
+```bash
+python repair_db.py
+```
 
-### Cross-Platform
-- Works on Windows, macOS, and Linux
-- PowerShell-friendly commands for Windows users
-- ANSI color support for enhanced terminal display
+This utility will:
+- Fix corrupted JSON data
+- Standardize data types
+- Clean up inconsistent entries
+- Preserve all recoverable information
 
-## Troubleshooting
+#### Manual Migration
+For troubleshooting database issues:
+```bash
+python migrate_db.py
+```
 
-### If textual is not available:
-Use the CLI interface: `python cli.py`
+### Error Recovery
+The application includes robust error handling:
+- **JSON Parse Errors**: Automatically fixed with safe defaults
+- **Missing Columns**: Added automatically with backward compatibility
+- **Database Corruption**: Repairable with included utilities
+- **Import Errors**: Graceful fallbacks for missing dependencies
 
-### If pandas is not available:
-CSV export will still work but may be limited. Install with: `pip install pandas`
+## 🎨 Customization
 
-### Database issues:
-The SQLite database is created automatically. If corrupted, delete `contacts.db` and restart the application.
+### Tag Colors
+Tags are automatically color-coded using a consistent algorithm:
+- Same tag → same color across all interfaces
+- Color rotation: Red, Blue, Green, Yellow, Magenta, Cyan
+- Web interface uses Bootstrap color classes
+- Terminal interfaces use ANSI colors
 
-### Color display issues:
-If colors don't display properly, your terminal may not support ANSI colors. The functionality will still work without colors.
+### Web Interface Themes
+The web interface uses Bootstrap 5 and can be customized by:
+- Modifying `templates/base.html` for layout changes
+- Adding custom CSS in the `static/` directory
+- Changing the Bootstrap theme CDN link
 
-## Future Enhancements
+## 🔍 Dependencies
 
-Potential improvements for future versions:
-- Import from CSV/JSON
-- Contact photos/avatars
-- Backup and restore functionality
-- Advanced search with multiple criteria
-- Contact grouping and categories
-- Integration with external services
-- Data synchronization options
+### Core Dependencies (All Interfaces)
+- **sqlite3** - Database (built-in with Python)
+- **json** - Data serialization (built-in)
+- **datetime** - Timestamp handling (built-in)
 
-## License
+### Web Interface
+- **flask** - Web framework
+- **wtforms** - Form handling and validation
+- **flask-wtf** - Flask integration for WTForms
 
-This project is open source and available under the MIT License.
+### TUI Interface
+- **textual** - Modern terminal UI framework
+- **rich** - Rich text formatting and colors
+
+### Optional Enhancements
+- **pandas** - Enhanced CSV export (optional)
+
+### Installation Commands
+```bash
+# All features
+pip install flask wtforms flask-wtf textual rich pandas
+
+# Web only
+pip install flask wtforms flask-wtf
+
+# TUI only  
+pip install textual rich
+
+# CLI only (no extra dependencies needed)
+```
+
+## 🚨 Troubleshooting
+
+### Common Issues
+
+#### "Unable to open database file"
+```bash
+# Check file permissions
+ls -la contacts.db
+
+# Repair if corrupted
+python repair_db.py
+
+# If all else fails, delete and restart
+rm contacts.db
+python start.py
+```
+
+#### "No such column: like_as_friend"
+```bash
+# Run migration (automatic)
+python start.py
+
+# Or manually
+python migrate_db.py
+```
+
+#### "Textual not installed"
+```bash
+# Install textual
+pip install textual rich
+
+# Or use CLI fallback
+python cli.py
+```
+
+#### JSON Decode Errors
+```bash
+# Run database repair
+python repair_db.py
+```
+
+#### Import Errors
+- **Flask issues**: `pip install flask wtforms flask-wtf`
+- **Textual issues**: `pip install textual rich` 
+- **Pandas issues**: `pip install pandas` (optional)
+
+### Performance Tips
+- **Large datasets**: Use search and filtering instead of browsing all contacts
+- **Slow web interface**: Check if debug mode is enabled (only for development)
+- **Memory usage**: The TUI interface uses more memory than CLI
+- **Database size**: Export and reimport periodically to optimize database
+
+## 🔮 Future Enhancements
+
+### Planned Features
+- **Contact Import**: Import from CSV, JSON, and vCard formats
+- **Photo Support**: Contact avatars and photo attachments
+- **Backup System**: Automated backups with versioning
+- **Advanced Search**: Multi-field search with filters
+- **Contact Groups**: Organize contacts into custom groups
+- **Data Sync**: Cloud synchronization options
+- **Mobile App**: React Native companion app
+- **API Expansion**: REST API for third-party integrations
+
+### Contributing
+This project welcomes contributions! Areas for improvement:
+- Additional database backends (PostgreSQL, MySQL)
+- Enhanced search algorithms
+- More export formats
+- UI/UX improvements
+- Performance optimizations
+- Test coverage
+- Documentation improvements
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **Flask** - Lightweight web framework
+- **Textual** - Modern terminal UI library  
+- **Bootstrap** - Responsive web design framework
+- **SQLite** - Reliable embedded database
+- **Rich** - Beautiful terminal formatting
+
+## 📞 Support
+
+For issues, questions, or contributions:
+- **GitHub Issues**: [Report bugs or request features](https://github.com/IshanAsati/thedb/issues)
+- **Documentation**: Check this README and SETUP.md
+- **Database Issues**: Use the built-in repair utilities
+
+---
+
+**Made with ❤️ for better contact management**

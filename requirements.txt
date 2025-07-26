@@ -1,7 +1,22 @@
-textual>=0.44.0
-sqlite3
-click>=8.0.0
-pandas>=1.5.0
+# The People DB - Python Dependencies
+# Install with: pip install -r requirements.txt
+
+# Core Web Interface Dependencies
 flask>=2.3.0
 wtforms>=3.0.0
 flask-wtf>=1.1.0
+
+# TUI Interface Dependencies
+textual>=0.45.0
+rich>=13.0.0
+
+# Optional Dependencies
+pandas>=2.0.0       # Enhanced CSV export (optional but recommended)
+
+# Built-in dependencies (no installation needed):
+# - sqlite3 (database)
+# - json (data serialization)
+# - datetime (timestamps)
+# - csv (basic CSV export)
+# - os (file operations)
+# - pathlib (file paths)

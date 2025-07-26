@@ -161,7 +161,11 @@
                             </div>
                             
                             <small class="text-muted">
-                                {{ contact.created_at[:10] if contact.created_at else '' }}
+                                {% if contact.created_at and contact.created_at|string|length >= 10 %}
+                                    {{ contact.created_at[:10] }}
+                                {% else %}
+                                    {{ contact.created_at or '' }}
+                                {% endif %}
                             </small>
                         </div>
                     </div>

@@ -60,6 +60,19 @@
                                     </div>
                                 {% endif %}
                             </div>
+                            
+                            <div class="mb-3">
+                                {{ form.address.label(class="form-label") }}
+                                {{ form.address() }}
+                                <div class="form-text">Street address, city, state/province, country</div>
+                                {% if form.address.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.address.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
                         
                         <!-- Additional Information -->
